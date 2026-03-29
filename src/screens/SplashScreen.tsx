@@ -21,10 +21,10 @@ export default function SplashScreen({ onFinish }: { onFinish: () => void }) {
   }, []);
 
   return (
-    <View className="flex-1 items-center justify-center bg-black">
+    <View className="flex-1 items-center justify-center">
       <Animated.Text
         style={{ opacity }}
-        className="text-white text-4xl font-bold tracking-widest"
+        className="text-black text-4xl font-bold tracking-widest"
       >
         CurbUp
       </Animated.Text>
