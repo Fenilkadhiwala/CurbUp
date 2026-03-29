@@ -21,6 +21,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      textColor: {
+        DEFAULT: "#000000",
+      },
       colors: {
         primary: {
           0: "rgb(var(--color-primary-0)/<alpha-value>)",
