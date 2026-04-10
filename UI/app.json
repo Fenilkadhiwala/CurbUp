@@ -1,5 +1,14 @@
 {
   "expo": {
+    "plugins": [
+      "expo-dev-client",
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-zimg1mbiu86etijo.us.auth0.com"
+        }
+      ]
+    ],
     "name": "curbup",
     "slug": "curbup",
     "version": "1.0.0",
@@ -12,9 +21,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fenil.curbup"
     },
     "android": {
+      "package": "com.fenil.curbup",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -25,6 +36,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "scheme": "com.fenil.curbup"
   }
 }
