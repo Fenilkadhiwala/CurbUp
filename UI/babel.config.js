@@ -10,11 +10,10 @@ module.exports = function (api) {
           alias: {
             "@": "./",
             "tailwind.config": "./tailwind.config.js",
-            "react-dom": "./react-dom-shim", // 👈 add this
+            "react-dom": "./react-dom-shim",
           },
         },
       ],
-      "react-native-worklets/plugin",
       ["module:react-native-dotenv"],
     ],
   };
