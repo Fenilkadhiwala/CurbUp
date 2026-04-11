@@ -1,4 +1,4 @@
-import { Button, ButtonText } from "@/components/ui/button";
+import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
 import {
   Checkbox,
   CheckboxIcon,
@@ -17,6 +17,10 @@ import { validateEmail, validatePassword } from "../utils/validate";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types/types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { handleSignin } from "../api";
+import * as SecureStore from "expo-secure-store";
+import { useAuth } from "../context/AuthContext";
+import { formatEmail } from "../utils/commonFunctions";
 
 export const SigninForm = () => {
   const navigation =
@@ -24,15 +28,31 @@ export const SigninForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({ email: "", password: "", api: "" });
+  const { setToken, setUser } = useAuth();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setIsLoading(true);
     const emailError = validateEmail(email);
     const passwordError = validatePassword(password);
-    setErrors({ email: emailError, password: passwordError });
+    setErrors({ email: emailError, password: passwordError, api: "" });
 
     if (!emailError && !passwordError) {
-      // proceed with login
+      try {
+        const loginResponse: any = await handleSignin(email, password);
+        const accessToken = loginResponse.data.access_token;
+        await SecureStore.setItemAsync("accessToken", accessToken);
+        setToken(accessToken);
+        setIsLoading(false);
+        setUser(loginResponse?.data?.user);
+      } catch (error: any) {
+        setIsLoading(false);
+        setErrors((prev: any) => ({
+          ...prev,
+          api: error.message,
+        }));
+      }
     }
   };
 
@@ -59,8 +79,13 @@ export const SigninForm = () => {
               placeholder="example@gmail.com"
               value={email}
               onChangeText={(val) => {
-                setEmail(val);
-                setErrors((prev) => ({ ...prev, email: validateEmail(val) }));
+                const formattedEmail = formatEmail(val);
+
+                setEmail(formattedEmail);
+                setErrors((prev) => ({
+                  ...prev,
+                  email: validateEmail(formattedEmail),
+                }));
               }}
             />
           </Input>
@@ -123,7 +148,11 @@ export const SigninForm = () => {
             <ButtonText className="text-[#246BFD]">Forgot password?</ButtonText>
           </Button>
         </View>
-
+        {errors?.api && (
+          <Text style={{ color: "#ef4444", marginBottom: 4 }}>
+            Invalid email or password
+          </Text>
+        )}
         <Button
           className="bg-[#246BFD] rounded-full mt-6"
           size="xl"
@@ -131,7 +160,14 @@ export const SigninForm = () => {
           action="primary"
           onPress={handleSubmit}
         >
-          <ButtonText>Sign In</ButtonText>
+          {isLoading ? (
+            <>
+              <ButtonSpinner color="white" />
+              <ButtonText>Signing In</ButtonText>
+            </>
+          ) : (
+            <ButtonText>Sign In</ButtonText>
+          )}
         </Button>
       </View>
 

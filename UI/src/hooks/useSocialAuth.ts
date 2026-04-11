@@ -15,8 +15,6 @@ export const useSocialLogin = () => {
       const credentials = await getCredentials();
       const accessToken = credentials?.accessToken;
 
-      console.log("user and token", user, accessToken);
-
       return { accessToken, user };
     } catch (error) {
       console.error("Social login error:", error);
