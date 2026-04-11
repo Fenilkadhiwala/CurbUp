@@ -33,8 +33,11 @@ export const handleSignin = async (email: string, password: string) => {
     );
 
     return loginResponse;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Something went wrong while signing in user", error);
+    console.log("STATUS:", error.response?.status);
+    console.log("DATA:", error.response?.data);
+    console.log("MESSAGE:", error.message);
   }
 };
 
