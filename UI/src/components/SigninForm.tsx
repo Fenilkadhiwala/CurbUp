@@ -1,11 +1,4 @@
 import { Button, ButtonSpinner, ButtonText } from "@/components/ui/button";
-import {
-  Checkbox,
-  CheckboxIcon,
-  CheckboxIndicator,
-  CheckboxLabel,
-} from "@/components/ui/checkbox";
-import { CheckIcon } from "@/components/ui/icon";
 import { Input, InputField, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -64,7 +57,6 @@ export const SigninForm = () => {
       </View>
 
       <View className="w-full flex flex-col gap-4 mt-10">
-        {/* Email */}
         <VStack space="xs">
           <Text className="text-black">Email</Text>
           <Input
@@ -94,7 +86,6 @@ export const SigninForm = () => {
           ) : null}
         </VStack>
 
-        {/* Password */}
         <VStack space="xs">
           <Text className="text-black">Password</Text>
           <Input
@@ -133,18 +124,14 @@ export const SigninForm = () => {
         </VStack>
 
         <View className="flex flex-row items-center justify-between">
-          <Checkbox
-            value="remember"
-            isDisabled={false}
-            isInvalid={false}
+          <Button
+            onPress={() => {
+              navigation?.navigate("ForgotPassword");
+            }}
+            variant="link"
             size="md"
+            action="primary"
           >
-            <CheckboxIndicator>
-              <CheckboxIcon as={CheckIcon} />
-            </CheckboxIndicator>
-            <CheckboxLabel className="text-black">Remember me</CheckboxLabel>
-          </Checkbox>
-          <Button variant="link" size="md" action="primary">
             <ButtonText className="text-[#246BFD]">Forgot password?</ButtonText>
           </Button>
         </View>
