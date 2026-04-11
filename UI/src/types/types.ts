@@ -2,6 +2,7 @@ export type RootStackParamList = {
   Home: undefined;
   Signin: undefined;
   Signup: undefined;
+  ForgotPassword: undefined;
 };
 
 export interface user {

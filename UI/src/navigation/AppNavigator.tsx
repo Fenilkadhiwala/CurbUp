@@ -6,6 +6,7 @@ import SigninScreen from "../screens/SigninScreen";
 import SignupScreen from "../screens/SignupScreen";
 import { useAuth } from "../context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
+import { ForgotPasswordScreen } from "../screens/ForgotPasswordScreen";
 
 const Stack: RootStackParamList | any = createNativeStackNavigator();
 
@@ -31,6 +32,10 @@ export default function AppNavigator() {
           <>
             <Stack.Screen name="Signin" component={SigninScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
+            />
           </>
         )}
       </Stack.Navigator>

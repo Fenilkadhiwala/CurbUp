@@ -5,6 +5,21 @@ import Constants from "expo-constants";
 const authDomain = Constants.expoConfig?.extra?.AUTH0_DOMAIN;
 const authClientID = Constants.expoConfig?.extra?.AUTH0_CLIENTID;
 
+export const handleForgotPassword = async (email: string) => {
+  try {
+    await axios.post(`https://${authDomain}/dbconnections/change_password`, {
+      client_id: authClientID,
+      email,
+      connection: "Username-Password-Authentication",
+    });
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Something went wrong while sending an email.",
+    );
+  }
+};
+
 export const handleSignup = async (email: string, password: string) => {
   try {
     await axios.post(`https://${authDomain}/dbconnections/signup`, {
