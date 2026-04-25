@@ -28,8 +28,14 @@ export const handleSignup = async (email: string, password: string) => {
       password,
       connection: "Username-Password-Authentication",
     });
-  } catch (error) {
-    console.error("Something went wrong while creating user in Auth0", error);
+  } catch (error: any) {
+    const errorCode = error.response?.data?.code;
+
+    if (errorCode === "user_exists" || errorCode === "invalid_user_password") {
+      throw new Error("EMAIL_EXISTS");
+    }
+
+    throw error;
   }
 };
 
@@ -76,9 +82,11 @@ export const createUserInDatabase = async (
         },
       },
     );
-
     return response;
-  } catch (error) {
+  } catch (error: any) {
     console.log("Something went wrong while creating user in database", error);
+    console.log("STATUS:", error.response?.status);
+    console.log("DATA:", error.response?.data);
+    console.log("MESSAGE:", error.message);
   }
 };
