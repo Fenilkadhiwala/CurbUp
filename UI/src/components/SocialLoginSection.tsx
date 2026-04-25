@@ -15,7 +15,6 @@ export const SocialLoginSection = () => {
   ) => {
     try {
       const { accessToken, user }: any = await loginWithSocial(provider);
-
       await SecureStore.setItemAsync("accessToken", accessToken!);
       setToken(accessToken!);
 

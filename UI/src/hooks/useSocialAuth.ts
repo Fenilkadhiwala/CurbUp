@@ -10,6 +10,11 @@ export const useSocialLogin = () => {
       await authorize({
         connection,
         redirectUrl: "com.fenil.curbup://auth0callback",
+        scope: "openid profile email",
+        audience: "https://api.curbup.com",
+        additionalParameters: {
+          prompt: "select_account",
+        },
       });
 
       const credentials = await getCredentials();
