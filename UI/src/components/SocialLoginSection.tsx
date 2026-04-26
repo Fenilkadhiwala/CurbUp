@@ -16,16 +16,16 @@ export const SocialLoginSection = () => {
     try {
       const { accessToken, user }: any = await loginWithSocial(provider);
       await SecureStore.setItemAsync("accessToken", accessToken!);
+
+      setUser({
+        auth0_id: user?.sub,
+        email: user?.email,
+        full_name: user?.name,
+        phone_number: null,
+      });
       setToken(accessToken!);
 
-      const response: any = await createUserInDatabase(
-        user?.email,
-        user?.name,
-        "",
-        accessToken!,
-      );
-
-      setUser(response.data.user);
+      await createUserInDatabase(user?.email, user?.name, "", accessToken!);
     } catch (error) {
       console.error(error);
     }
