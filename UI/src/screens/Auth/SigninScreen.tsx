@@ -1,4 +1,4 @@
-import { SigninForm } from "../components/SigninForm";
+import { SigninForm } from "@/src/components/SigninForm";
 
 export default function SigninScreen() {
   return <SigninForm />;
