@@ -3,6 +3,7 @@
     "plugins": [
       "expo-dev-client",
       [
+        "expo-notifications",
         "react-native-auth0",
         {
           "domain": "dev-zimg1mbiu86etijo.us.auth0.com"
@@ -22,7 +23,11 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.fenil.curbup"
+      "bundleIdentifier": "com.fenil.curbup",
+       "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "CurbUp needs your location to show available parking spots near you.",
+        "NSLocationAlwaysUsageDescription": "CurbUp needs your location to show available parking spots near you."
+      }
     },
     "android": {
       "package": "com.fenil.curbup",
