@@ -6,13 +6,19 @@ import * as Notifications from "expo-notifications";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/types";
+import useOnboardingStore from "@/store/useOnBoardingStore";
+import { useAuth } from "../context/AuthContext";
 
 export const NotificationPermission = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const { setNotificationAllowed } = useOnboardingStore();
+  const { user } = useAuth();
+
   const handleAllowNotifications = async () => {
     await Notifications.requestPermissionsAsync();
+    setNotificationAllowed(true, user?.auth0_id);
     navigation.navigate("LocationPermission");
   };
 
@@ -55,6 +61,7 @@ export const NotificationPermission = () => {
           </Button>
           <Button
             onPress={() => {
+              setNotificationAllowed(false, user?.auth0_id);
               navigation.navigate("LocationPermission");
             }}
             size="xl"

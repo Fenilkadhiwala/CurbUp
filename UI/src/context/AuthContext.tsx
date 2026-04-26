@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
-
 const AuthContext = createContext<any>(null);
 
 export const AuthProvider = ({ children }: any) => {

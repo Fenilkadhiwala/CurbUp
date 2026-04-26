@@ -4,12 +4,20 @@ import useOnboardingStore from "@/store/useOnBoardingStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import * as Location from "expo-location";
+import { RootStackParamList } from "../types/types";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../context/AuthContext";
 
 export const LocationPermission = () => {
-  const { setOnboardingComplete } = useOnboardingStore();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { setLocationAllowed } = useOnboardingStore();
+  const { user } = useAuth();
+
   const handleAllowLocation = async () => {
     await Location.requestForegroundPermissionsAsync();
-    setOnboardingComplete();
+    setLocationAllowed(true, user?.auth0_id);
   };
   return (
     <View className="flex-1 justify-center items-center">
@@ -46,7 +54,15 @@ export const LocationPermission = () => {
               Enable Location
             </ButtonText>
           </Button>
-          <Button size="xl" variant="link" action="primary">
+          <Button
+            onPress={() => {
+              setLocationAllowed(false, user?.auth0_id);
+              navigation.navigate("HomeScreen");
+            }}
+            size="xl"
+            variant="link"
+            action="primary"
+          >
             <ButtonText className="text-center w-full text-md font-light text-gray-700">
               Maybe Later
             </ButtonText>

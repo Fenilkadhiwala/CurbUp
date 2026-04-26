@@ -2,22 +2,28 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import { RootStackParamList } from "../types/types";
-
 import { useAuth } from "../context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
-
 import useOnboardingStore from "@/store/useOnBoardingStore";
 import SigninScreen from "../screens/Auth/SigninScreen";
 import SignupScreen from "../screens/Auth/SignupScreen";
 import { ForgotPasswordScreen } from "../screens/Auth/ForgotPasswordScreen";
 import NotificationPermissionScreen from "../screens/Permissions/NotificationPermissionScreen";
 import LocationPermissionScreen from "../screens/Permissions/LocationPermissionScreen";
+import { useEffect } from "react";
 
 const Stack: RootStackParamList | any = createNativeStackNavigator();
 
 export default function AppNavigator() {
   const { token, loading } = useAuth();
-  const { onboardingComplete } = useOnboardingStore();
+  const { isNotificationPermissionSeen, isLocationPermissionSeen } =
+    useOnboardingStore();
+  const { user } = useAuth();
+  const { checkAndResetForUser } = useOnboardingStore();
+
+  useEffect(() => {
+    checkAndResetForUser(user?.auth0_id);
+  }, [token, user?.auth0_id]);
 
   if (loading) {
     return (
@@ -32,18 +38,7 @@ export default function AppNavigator() {
       <Stack.Navigator
         screenOptions={{ contentStyle: { backgroundColor: "#ffffff" } }}
       >
-        {!onboardingComplete ? (
-          <>
-            <Stack.Screen
-              name="NotificationPermission"
-              component={NotificationPermissionScreen}
-            />
-            <Stack.Screen
-              name="LocationPermission"
-              component={LocationPermissionScreen}
-            />
-          </>
-        ) : !token ? (
+        {!token ? (
           <>
             <Stack.Screen name="Signin" component={SigninScreen} />
             <Stack.Screen name="Signup" component={SignupScreen} />
@@ -52,8 +47,18 @@ export default function AppNavigator() {
               component={ForgotPasswordScreen}
             />
           </>
+        ) : !isNotificationPermissionSeen ? (
+          <Stack.Screen
+            name="NotificationPermission"
+            component={NotificationPermissionScreen}
+          />
+        ) : !isLocationPermissionSeen ? (
+          <Stack.Screen
+            name="LocationPermission"
+            component={LocationPermissionScreen}
+          />
         ) : (
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
