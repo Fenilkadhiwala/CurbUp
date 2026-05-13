@@ -6,9 +6,11 @@ import * as SecureStore from "expo-secure-store";
 import { useAuth } from "../context/AuthContext";
 import { useSocialLogin } from "../hooks/useSocialAuth";
 import { createUserInDatabase } from "../api";
+import useUserStore from "@/store/useUserStore";
 
 export const SocialLoginSection = () => {
-  const { setToken, setUser } = useAuth();
+  const { setToken } = useAuth();
+  const { setUser } = useUserStore();
   const { loginWithSocial } = useSocialLogin();
   const handleSocialLogin = async (
     provider: "google-oauth2" | "apple" | "facebook",
@@ -16,7 +18,6 @@ export const SocialLoginSection = () => {
     try {
       const { accessToken, user }: any = await loginWithSocial(provider);
       await SecureStore.setItemAsync("accessToken", accessToken!);
-
       setUser({
         auth0_id: user?.sub,
         email: user?.email,
