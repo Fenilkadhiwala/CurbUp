@@ -20,9 +20,10 @@ import { formatEmail, formatPhoneNumber } from "../utils/commonFunctions";
 import { createUserInDatabase, handleSignin, handleSignup } from "../api";
 import * as SecureStore from "expo-secure-store";
 import { useAuth } from "../context/AuthContext";
+import useUserStore from "@/store/useUserStore";
 
 export const SignupForm = () => {
-  const { setToken, setUser } = useAuth();
+  const { setToken } = useAuth();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [fullName, setFullName] = useState("");
@@ -39,6 +40,8 @@ export const SignupForm = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const { setUser } = useUserStore();
 
   const createUser = async (values: user) => {
     try {

@@ -3,6 +3,7 @@
     "plugins": [
       "expo-dev-client",
       [
+        "@rnmapbox/maps",
         "expo-notifications",
         "react-native-auth0",
         {

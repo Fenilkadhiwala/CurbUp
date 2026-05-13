@@ -13,8 +13,9 @@ export default {
     },
     scheme: "com.fenil.curbup", // ← required for Auth0 redirect
     extra: {
-      AUTH0_DOMAIN: "dev-zimg1mbiu86etijo.us.auth0.com",
-      AUTH0_CLIENTID: "GAFQLBON8yXO01vAfKnCEXo9mAxEQgjp",
+      AUTH0_DOMAIN: process.env.EXPO_AUTH0_DOMAIN,
+      AUTH0_CLIENTID: process.env.EXPO_AUTH0_CLIENTID,
+      MAPBOX_ACCESSTOKEN: process.env.EXPO_MAPBOX_ACCESSTOKEN,
     },
     plugins: [
       "expo-asset",

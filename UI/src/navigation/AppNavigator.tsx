@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
+import Dashboard from "../screens/Dashboard";
 import { RootStackParamList } from "../types/types";
 import { useAuth } from "../context/AuthContext";
 import { ActivityIndicator, View } from "react-native";
@@ -58,7 +58,7 @@ export default function AppNavigator() {
             component={LocationPermissionScreen}
           />
         ) : (
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="Dashboard" component={Dashboard} />
         )}
       </Stack.Navigator>
     </NavigationContainer>

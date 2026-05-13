@@ -14,6 +14,7 @@ import { handleSignin } from "../api";
 import * as SecureStore from "expo-secure-store";
 import { useAuth } from "../context/AuthContext";
 import { formatEmail } from "../utils/commonFunctions";
+import useUserStore from "@/store/useUserStore";
 
 export const SigninForm = () => {
   const navigation =
@@ -23,7 +24,8 @@ export const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "", api: "" });
-  const { setToken, setUser } = useAuth();
+  const { setToken } = useAuth();
+  const { setUser } = useUserStore();
 
   const handleSubmit = async () => {
     setIsLoading(true);

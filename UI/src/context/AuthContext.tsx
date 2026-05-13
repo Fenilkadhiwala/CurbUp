@@ -5,12 +5,6 @@ const AuthContext = createContext<any>(null);
 export const AuthProvider = ({ children }: any) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState({
-    auth0_id: "",
-    email: "",
-    full_name: "",
-    phone_number: "",
-  });
 
   useEffect(() => {
     SecureStore.getItemAsync("accessToken").then((t) => {
@@ -25,9 +19,7 @@ export const AuthProvider = ({ children }: any) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ token, setToken, user, setUser, signout, loading }}
-    >
+    <AuthContext.Provider value={{ token, setToken, signout, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -57,7 +57,7 @@ export const LocationPermission = () => {
           <Button
             onPress={() => {
               setLocationAllowed(false, user?.auth0_id);
-              navigation.navigate("HomeScreen");
+              navigation.navigate("Dashboard");
             }}
             size="xl"
             variant="link"
