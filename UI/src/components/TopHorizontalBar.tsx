@@ -7,10 +7,13 @@ import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "react-native";
 import useUserStore from "@/store/useUserStore";
-import { Bell, MapPin } from "lucide-react-native";
+import { MapPin, LogOut } from "lucide-react-native";
+import { useAuth } from "../context/AuthContext";
 
 export const TopHorizontalBar = () => {
   const { user } = useUserStore();
+
+  const { signout } = useAuth();
 
   return (
     <HStack className="items-center justify-between px-6 py-2">
@@ -29,7 +32,12 @@ export const TopHorizontalBar = () => {
       </HStack>
 
       <Box className="w-14 h-14 rounded-full bg-gray-100 items-center justify-center">
-        <Bell size={19}></Bell>
+        <LogOut
+          onPress={() => {
+            signout();
+          }}
+          size={19}
+        ></LogOut>
       </Box>
     </HStack>
   );
