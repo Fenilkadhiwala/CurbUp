@@ -2,35 +2,57 @@ import Mapbox from "@rnmapbox/maps";
 import { useEffect, useRef, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import * as Location from "expo-location";
-
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
+import useOnboardingStore from "@/store/useOnBoardingStore";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 Mapbox.setAccessToken(Constants.expoConfig?.extra?.MAPBOX_ACCESSTOKEN);
 
-export const Map = () => {
-  const JERSEY_COORDS: [number, number] = [-74.05366, 40.73586];
+const NJ_CENTER: [number, number] = [-74.1724, 40.0583];
 
-  const [userLocation, setUserLocation] =
-    useState<[number, number]>(JERSEY_COORDS);
-  const [zoomLevel, setZoomLevel] = useState(14);
+export const Map = () => {
+  const { isLocationSharingAllowed } = useOnboardingStore();
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(
+    null,
+  );
+  const [zoomLevel, setZoomLevel] = useState(18);
   const cameraRef = useRef<Mapbox.Camera>(null);
+  const currentCenter = useRef<[number, number]>(NJ_CENTER);
+
   useEffect(() => {
     const getLocation = async () => {
-      const { status } = await Location.getForegroundPermissionsAsync();
-      if (status === "granted") {
-        const location = await Location.getCurrentPositionAsync({});
-        const coords: [number, number] = [
-          location.coords.longitude,
-          location.coords.latitude,
-        ];
-        setUserLocation(coords);
+      if (isLocationSharingAllowed) {
+        try {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+          });
+          const coords: [number, number] = [
+            location.coords.longitude,
+            location.coords.latitude,
+          ];
+          currentCenter.current = coords;
+          setUserLocation(coords);
+          cameraRef.current?.setCamera({
+            centerCoordinate: coords,
+            zoomLevel: 18,
+            animationDuration: 1000,
+          });
+          setZoomLevel(18);
+        } catch (err) {
+          console.log("location error", err);
+          cameraRef.current?.setCamera({
+            centerCoordinate: NJ_CENTER,
+            zoomLevel: 10,
+            animationDuration: 1000,
+          });
+        }
+      } else {
         cameraRef.current?.setCamera({
-          centerCoordinate: coords,
-          zoomLevel: 15,
+          centerCoordinate: NJ_CENTER,
+          zoomLevel: 10,
           animationDuration: 1000,
         });
-        setZoomLevel(15);
       }
     };
     getLocation();
@@ -55,13 +77,17 @@ export const Map = () => {
   };
 
   const handleRecenter = () => {
+    const target = userLocation ?? NJ_CENTER;
+    const zoom = 18;
+    currentCenter.current = target;
     cameraRef.current?.setCamera({
-      centerCoordinate: userLocation,
-      zoomLevel: 15,
+      centerCoordinate: target,
+      zoomLevel: zoom,
       animationDuration: 500,
     });
-    setZoomLevel(15);
+    setZoomLevel(zoom);
   };
+
   return (
     <View style={styles.container}>
       <Mapbox.MapView
@@ -73,18 +99,22 @@ export const Map = () => {
       >
         <Mapbox.Camera
           ref={cameraRef}
-          centerCoordinate={JERSEY_COORDS}
-          zoomLevel={zoomLevel}
-          animationMode="flyTo"
-          animationDuration={1000}
+          defaultSettings={{
+            centerCoordinate: NJ_CENTER,
+            zoomLevel: 18,
+          }}
         />
-        <Mapbox.PointAnnotation
-          id="userLocation"
-          coordinate={userLocation}
-          anchor={{ x: 0.5, y: 1 }}
-        >
-          <Entypo name="location-pin" size={44} color="#246BFD" />
-        </Mapbox.PointAnnotation>
+        {userLocation && (
+          <Mapbox.PointAnnotation
+            id="userLocation"
+            coordinate={userLocation}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.carMarker}>
+              <Ionicons name="car-sport" size={24} color="#ffffff" />
+            </View>
+          </Mapbox.PointAnnotation>
+        )}
       </Mapbox.MapView>
 
       <View style={styles.zoomControls}>
@@ -107,7 +137,6 @@ export const Map = () => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   map: { flex: 1 },
-
   zoomControls: {
     position: "absolute",
     right: 12,
@@ -138,7 +167,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#e5e7eb",
     marginHorizontal: 8,
   },
-
   recenterBtn: {
     position: "absolute",
     left: 12,
@@ -155,5 +183,18 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
     zIndex: 10,
+  },
+  carMarker: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#246BFD",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
