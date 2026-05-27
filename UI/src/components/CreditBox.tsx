@@ -10,7 +10,7 @@ export const CreditBox = () => {
           Your Credits
         </Text>
         <Text className="text-black text-4xl font-semibold tracking-tight">
-          50.00
+          50
         </Text>
         <Text className="text-gray-400 text-sm font-normal mb-1">
           Earn more by reporting spots
