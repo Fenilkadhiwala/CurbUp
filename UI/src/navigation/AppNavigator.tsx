@@ -11,6 +11,7 @@ import { ForgotPasswordScreen } from "../screens/Auth/ForgotPasswordScreen";
 import NotificationPermissionScreen from "../screens/Permissions/NotificationPermissionScreen";
 import LocationPermissionScreen from "../screens/Permissions/LocationPermissionScreen";
 import { useEffect } from "react";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const Stack: RootStackParamList | any = createNativeStackNavigator();
 
@@ -34,33 +35,40 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{ contentStyle: { backgroundColor: "#ffffff" } }}
-      >
-        {!token ? (
-          <>
-            <Stack.Screen name="Signin" component={SigninScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen
-              name="ForgotPassword"
-              component={ForgotPasswordScreen}
-            />
-          </>
-        ) : !isNotificationPermissionSeen ? (
-          <Stack.Screen
-            name="NotificationPermission"
-            component={NotificationPermissionScreen}
-          />
-        ) : !isLocationPermissionSeen ? (
-          <Stack.Screen
-            name="LocationPermission"
-            component={LocationPermissionScreen}
-          />
-        ) : (
-          <Stack.Screen name="Dashboard" component={Dashboard} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: "#ffffff" },
+            }}
+          >
+            {!token ? (
+              <>
+                <Stack.Screen name="Signin" component={SigninScreen} />
+                <Stack.Screen name="Signup" component={SignupScreen} />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPasswordScreen}
+                />
+              </>
+            ) : !isNotificationPermissionSeen ? (
+              <Stack.Screen
+                name="NotificationPermission"
+                component={NotificationPermissionScreen}
+              />
+            ) : !isLocationPermissionSeen ? (
+              <Stack.Screen
+                name="LocationPermission"
+                component={LocationPermissionScreen}
+              />
+            ) : (
+              <Stack.Screen name="Dashboard" component={Dashboard} />
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }

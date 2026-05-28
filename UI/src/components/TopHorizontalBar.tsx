@@ -1,44 +1,47 @@
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallbackText,
-} from "@/components/ui/avatar";
-import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
-import { Text } from "react-native";
-import useUserStore from "@/store/useUserStore";
-import { MapPin, LogOut } from "lucide-react-native";
-import { useAuth } from "../context/AuthContext";
+import { Text, View } from "react-native";
+import { ChevronDown } from "lucide-react-native";
+import { useEffect, useState } from "react";
+import { getCoords } from "../utils/commonFunctions";
+import * as Location from "expo-location";
+import useOnboardingStore from "@/store/useOnBoardingStore";
 
 export const TopHorizontalBar = () => {
-  const { user } = useUserStore();
+  const [streetName, setStreetName] = useState("");
+  const { isLocationSharingAllowed } = useOnboardingStore();
 
-  const { signout } = useAuth();
+  const getStreetFromCoords = async (coords: any) => {
+    try {
+      const address = await Location.reverseGeocodeAsync({
+        latitude: coords[1],
+        longitude: coords[0],
+      });
 
+      if (address.length > 0) {
+        const place: any = address[0];
+
+        setStreetName(place?.street);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const fetchLocation = async () => {
+      const coords = await getCoords();
+      getStreetFromCoords(coords);
+    };
+
+    fetchLocation();
+  }, []);
   return (
-    <HStack className="items-center justify-between px-6 py-2">
-      <Avatar className="bg-[#246BFD]">
-        <AvatarFallbackText className="text-white">
-          {user?.full_name}
-        </AvatarFallbackText>
-        <AvatarBadge />
-      </Avatar>
-
-      <HStack className="items-center bg-gray-100 px-4 py-4 rounded-full gap-2">
-        <MapPin size={18} color="#246BFD" />
-        <Text className="text-gray-700 text-md font-light">
-          Jersey City NJ, 07306
+    <View className="px-4 pt-1 flex-row justify-between items-center">
+      <HStack className="flex items-center justify-center gap-1">
+        <Text className="text-lg font-semibold">
+          {isLocationSharingAllowed ? streetName : "Set your location"}
         </Text>
+        <ChevronDown size={18} />
       </HStack>
-
-      <Box className="w-14 h-14 rounded-full bg-gray-100 items-center justify-center">
-        <LogOut
-          onPress={() => {
-            signout();
-          }}
-          size={19}
-        ></LogOut>
-      </Box>
-    </HStack>
+    </View>
   );
 };

@@ -8,7 +8,7 @@ export default function Navbar({ activeTab, onTabPress }: any) {
   return (
     <View
       className="absolute left-[18px] right-[18px] z-50"
-      style={{ bottom: insets.bottom + 12 }}
+      style={{ bottom: insets.bottom - 22 }}
     >
       <View className="flex-row items-center justify-around bg-white/95 rounded-[28px] py-2.5 px-2 shadow-lg shadow-black/20">
         {TABS.map(({ key, label, Icon, badge }) => {

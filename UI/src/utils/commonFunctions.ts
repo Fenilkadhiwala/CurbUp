@@ -1,3 +1,5 @@
+import * as Location from "expo-location";
+
 export const formatPhoneNumber = (value: string) => {
   const digits = value.replace(/\D/g, "").slice(0, 10);
 
@@ -9,4 +11,16 @@ export const formatPhoneNumber = (value: string) => {
 export const formatEmail = (value: string) => {
   if (!value) return value;
   return value.charAt(0).toLowerCase() + value.slice(1);
+};
+
+export const getCoords = async () => {
+  const location = await Location.getCurrentPositionAsync({
+    accuracy: Location.Accuracy.Balanced,
+  });
+  const coords: [number, number] = [
+    location.coords.longitude,
+    location.coords.latitude,
+  ];
+
+  return coords;
 };

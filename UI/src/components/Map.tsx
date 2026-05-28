@@ -1,11 +1,11 @@
 import Mapbox from "@rnmapbox/maps";
 import { useEffect, useRef, useState } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
-import * as Location from "expo-location";
 import { Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 import useOnboardingStore from "@/store/useOnBoardingStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { getCoords } from "../utils/commonFunctions";
 
 Mapbox.setAccessToken(Constants.expoConfig?.extra?.MAPBOX_ACCESSTOKEN);
 
@@ -19,43 +19,36 @@ export const Map = () => {
   const [zoomLevel, setZoomLevel] = useState(18);
   const cameraRef = useRef<Mapbox.Camera>(null);
   const currentCenter = useRef<[number, number]>(NJ_CENTER);
-
-  useEffect(() => {
-    const getLocation = async () => {
-      if (isLocationSharingAllowed) {
-        try {
-          const location = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          });
-          const coords: [number, number] = [
-            location.coords.longitude,
-            location.coords.latitude,
-          ];
-          currentCenter.current = coords;
-          setUserLocation(coords);
-          cameraRef.current?.setCamera({
-            centerCoordinate: coords,
-            zoomLevel: 18,
-            animationDuration: 1000,
-          });
-          setZoomLevel(18);
-        } catch (err) {
-          console.log("location error", err);
-          cameraRef.current?.setCamera({
-            centerCoordinate: NJ_CENTER,
-            zoomLevel: 10,
-            animationDuration: 1000,
-          });
-        }
-      } else {
+  const fetchLocation = async () => {
+    if (isLocationSharingAllowed) {
+      try {
+        const coords = await getCoords();
+        currentCenter.current = coords;
+        setUserLocation(coords);
+        cameraRef.current?.setCamera({
+          centerCoordinate: coords,
+          zoomLevel: 18,
+          animationDuration: 1000,
+        });
+        setZoomLevel(18);
+      } catch (err) {
+        console.log("location error", err);
         cameraRef.current?.setCamera({
           centerCoordinate: NJ_CENTER,
           zoomLevel: 10,
           animationDuration: 1000,
         });
       }
-    };
-    getLocation();
+    } else {
+      cameraRef.current?.setCamera({
+        centerCoordinate: NJ_CENTER,
+        zoomLevel: 10,
+        animationDuration: 1000,
+      });
+    }
+  };
+  useEffect(() => {
+    fetchLocation();
   }, []);
 
   const handleZoomIn = () => {
