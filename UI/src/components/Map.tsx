@@ -85,7 +85,7 @@ export const Map = () => {
     <View style={styles.container}>
       <Mapbox.MapView
         style={styles.map}
-        styleURL="mapbox://styles/mapbox/streets-v12"
+        styleURL="mapbox://styles/mapbox/standard-satellite"
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled={true}
@@ -101,11 +101,9 @@ export const Map = () => {
           <Mapbox.PointAnnotation
             id="userLocation"
             coordinate={userLocation}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={{ x: 0.5, y: 1 }}
           >
-            <View style={styles.carMarker}>
-              <Ionicons name="car-sport" size={24} color="#ffffff" />
-            </View>
+            <Ionicons name="location-sharp" size={36} color="#246BFD" />
           </Mapbox.PointAnnotation>
         )}
       </Mapbox.MapView>
